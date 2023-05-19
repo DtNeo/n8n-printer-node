@@ -50,7 +50,7 @@ export class Printer implements INodeType {
 					required: true,
 				},
 				{
-					displayName: 'Select the printer discover',
+					displayName: 'Select the Printer Discover',
 					name: 'printers',
 					type: 'resourceLocator',
 					default: { mode: 'string', value: 'HP_LaserJet' },
@@ -84,11 +84,7 @@ export class Printer implements INodeType {
 		            const serverName = this.getNodeParameter('servername') as string;
 		            const exec = util.promisify(child_process.exec);
 		            const command = `lpstat -h ${serverName}:631 -p`;
-		            const { stdout, stderr } = await exec(command);
-		
-		            if (stderr) {
-		                throw new Error(`Error listing printers: ${stderr}`);
-		            }
+		            const { stdout } = await exec(command);
 
 		            const searchResults = stdout
 		                .split('\n')
@@ -116,11 +112,7 @@ export class Printer implements INodeType {
 		serverName = this.getNodeParameter('servername', 0) as string;
 
 		const command = `lp -d ${printer} -h ${serverName}:631 ${file}`;
-		const { stdout, stderr } = await exec(command);
-
-		if (stderr) {
-			throw new Error(`Error printing the file: ${stderr}`);
-		}
+		const { stdout } = await exec(command);
 
 		responseData = { success: true, output: stdout };
 
